@@ -1,0 +1,12 @@
+.App {
+  text-align: center;
+}
+.main-bg {
+  background-color: black;
+  height: 300px;
+  background-image: url('/bg.png');
+  background-size: cover;
+  background-position: center; 
+  /* 늘렸다 줄였다 해도 가운데 정렬 */
+}
+
