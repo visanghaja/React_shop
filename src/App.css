@@ -9,4 +9,6 @@
   background-position: center; 
   /* 늘렸다 줄였다 해도 가운데 정렬 */
 }
-
+.container{
+  margin-top: 70px;
+}

@@ -7,12 +7,15 @@ import data from './routes/data.js'
 import Item from './routes/item.jsx'
 import Detail from './routes/detail.jsx'
 import { Routes, Route, Link, useNavigate, Outlet, useParams } from 'react-router-dom'
+import axios from 'axios'
 
 
 function App() {
 
-  let [shoes] = useState(data) // 대충 서버에서 받아온 데이터
+  let [shoes, setShoes] = useState(data) // 대충 서버에서 받아온 데이터
   let navigate = useNavigate(); // 함수반환
+  let [click, setClick] = useState(0);
+  let [noitem, setNoitem] = useState(false);
 
 
   return (
@@ -40,12 +43,41 @@ function App() {
                 {
                   shoes.map((data, i) => {
                     return(
-                      <Item shoes = {data} i = {i+1} />
+                      <Item shoes = {data} i = {i+1} key = {i} />
                     )
                   })
                 }
               </div>
             </div>
+            {noitem && (
+              <div className="alert alert-warning">아이템 더 없음</div>
+            )}
+            <button onClick={() => {
+              if (click === 0) {
+                axios.get('https://codingapple1.github.io/shop/data2.json')
+                .then((result)=> { // 여기 데이터 안에 get 요청해서 받은 데이터 들어감!
+                  let copy = [...shoes, ...result.data];
+                  setShoes(copy);
+                  setClick(click+1)
+                })
+                .catch(()=>{
+                  console.log('실패함 ㅅㄱ')
+                })
+              } else if (click === 1) {
+                axios.get('https://codingapple1.github.io/shop/data3.json')
+                .then((result)=> { // 여기 데이터 안에 get 요청해서 받은 데이터 들어감!
+                  let copy = [...shoes, ...result.data];
+                  setShoes(copy);
+                  setClick(click+1)
+                })
+                .catch(()=>{
+                  console.log('실패함 ㅅㄱ')
+                })
+              } else {
+                setNoitem(true)
+              }
+
+            }}>버튼</button>
           </>
         }/>
         <Route path='/detail/:id' element={<Detail shoes = {shoes} />}/>
