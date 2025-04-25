@@ -18,13 +18,19 @@ let shopping = createSlice({
             result.count += 1
         },
         append(state, action){
+          if (!state.some(item => item.name === action.payload.name)) {
             state.push(action.payload)
-            console.log(JSON.parse(JSON.stringify(state)))
+          }
+            // console.log(JSON.parse(JSON.stringify(state)))
+        },
+        deleteItem(state, action){
+            let result = state.findIndex((item) => item.id === action.payload)
+            state.splice(result, 1)
         }
     }
 })
 
-export let {increase, append} = shopping.actions
+export let {increase, append, deleteItem} = shopping.actions
 
 export default configureStore({
   reducer: { 
