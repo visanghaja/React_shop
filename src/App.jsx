@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { createContext, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Navbar, Container, Nav } from 'react-bootstrap';
 import './App.css'
@@ -8,7 +8,9 @@ import Item from './routes/item.jsx'
 import Detail from './routes/detail.jsx'
 import { Routes, Route, Link, useNavigate, Outlet, useParams } from 'react-router-dom'
 import axios from 'axios'
+import Cart from './routes/Cart.jsx'
 
+let Context1 = createContext() // context 라는 state 보관함을 만들어줌
 
 function App() {
 
@@ -16,6 +18,8 @@ function App() {
   let navigate = useNavigate(); // 함수반환
   let [click, setClick] = useState(0);
   let [noitem, setNoitem] = useState(false);
+  let [loading, setLoading] = useState(false);
+  // let[재고] = useState([10, 11, 12])
 
 
   return (
@@ -27,13 +31,14 @@ function App() {
           <Nav className="me-auto">
             <Nav.Link onClick={() => { navigate('/') }}>Home</Nav.Link>
             <Nav.Link onClick={() => { navigate('/detail') }}>Detail</Nav.Link>
+            <Nav.Link onClick={() => { navigate('/cart') }}>Cart</Nav.Link>
           </Nav>
         </Container>
       </Navbar>
 
 
-      <Link to="/">홈</Link>
-      <Link>홈</Link>
+      {/* <Link to="/">홈</Link>
+      <Link>홈</Link> */}
       <Routes>
         <Route path='/' element={
           <>
@@ -53,12 +58,14 @@ function App() {
               <div className="alert alert-warning">아이템 더 없음</div>
             )}
             <button onClick={() => {
+              setLoading(true)
               if (click === 0) {
                 axios.get('https://codingapple1.github.io/shop/data2.json')
                 .then((result)=> { // 여기 데이터 안에 get 요청해서 받은 데이터 들어감!
                   let copy = [...shoes, ...result.data];
                   setShoes(copy);
                   setClick(click+1)
+                  setLoading(false)
                 })
                 .catch(()=>{
                   console.log('실패함 ㅅㄱ')
@@ -69,12 +76,14 @@ function App() {
                   let copy = [...shoes, ...result.data];
                   setShoes(copy);
                   setClick(click+1)
+                  setLoading(false)
                 })
                 .catch(()=>{
                   console.log('실패함 ㅅㄱ')
                 })
               } else {
                 setNoitem(true)
+                setLoading(false)
               }
 
             }}>버튼</button>
@@ -92,6 +101,8 @@ function App() {
           <Route path='one' element={<div>첫 주문시 양배추즙 서비스</div>}/> 
           <Route path='two' element={<div>생일기념 쿠폰받기</div>}/> 
         </Route>
+
+        <Route path='/cart' element={<Cart/>} />
       </Routes>
 
 
