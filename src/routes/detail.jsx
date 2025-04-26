@@ -30,11 +30,21 @@ function Detail(props) {
     }, [alert])
 
     useEffect(() => {
+        let history = localStorage.getItem('watched')
+        history = JSON.parse(history)
+        history.push(찾은상품.id)
+        
+        // Set으로 바꿨다가 다시 array 로 만들기
+        history = new Set(history)
+        history = Array.from(history) // array -> Set -> array
+        localStorage.setItem('watched', JSON.stringify(history))
+
         setFade2('end')
         return(() => {
             setFade2('')
         })
     }, [])
+    
 
     return(
 
@@ -43,7 +53,7 @@ function Detail(props) {
                 
                 <div className="row">
                     <div className="col-md-6">
-                        <img src="https://codingapple1.github.io/shop/shoes1.jpg" width="100%" />
+                        <img src= {'https://codingapple1.github.io/shop/shoes' + (찾은상품.id+1) + '.jpg'} width="100%" />
                     </div>
                     <div className="col-md-6">
                         <h4 className="pt-5">{찾은상품.title}</h4>

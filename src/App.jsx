@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Navbar, Container, Nav } from 'react-bootstrap';
 import './App.css'
@@ -9,10 +9,25 @@ import Detail from './routes/detail.jsx'
 import { Routes, Route, Link, useNavigate, Outlet, useParams } from 'react-router-dom'
 import axios from 'axios'
 import Cart from './routes/Cart.jsx'
+import { useQuery } from '@tanstack/react-query';
 
 let Context1 = createContext() // context 라는 state 보관함을 만들어줌
 
 function App() {
+
+  // let obj = {name : 'kim'}
+  // localStorage.setItem('data', JSON.stringify(obj)) // 이렇게 하면 JSON 으로 바뀌어서 보관
+  // let 꺼낸거 = localStorage.getItem('data')
+  // console.log(JSON.parse(꺼낸거))
+
+
+  useEffect(() => {
+    if (localStorage.getItem('watched') === null) { // 이렇게 하면 새로고침해도 초기화 x
+      localStorage.setItem('watched', JSON.stringify([]))
+    }
+    
+  }, []) // 이렇게 하면 처음 들어갔을때 한번 실행
+  
 
   let [shoes, setShoes] = useState(data) // 대충 서버에서 받아온 데이터
   let navigate = useNavigate(); // 함수반환
@@ -20,6 +35,18 @@ function App() {
   let [noitem, setNoitem] = useState(false);
   let [loading, setLoading] = useState(false);
   // let[재고] = useState([10, 11, 12])
+
+  let result = useQuery({
+    queryKey: ['작명'],
+    queryFn: () => 
+      axios.get('https://codingapple1.github.io/userdata.json')
+           .then((a) => a.data)
+  });
+  
+
+  result.data // data 들어잇음
+  result.isLoading // loading 중일 때 true
+  result.error // error 날 때 true
 
 
   return (
@@ -33,6 +60,11 @@ function App() {
             <Nav.Link onClick={() => { navigate('/detail') }}>Detail</Nav.Link>
             <Nav.Link onClick={() => { navigate('/cart') }}>Cart</Nav.Link>
           </Nav>
+          <Nav className='ms-auto'><span style={{color : 'white'}}>
+            {result.isLoading && '로딩중'}
+            {result.error && '에러남'}
+            {result.data && result.data.name}
+            </span></Nav>
         </Container>
       </Navbar>
 
