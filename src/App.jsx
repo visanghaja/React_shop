@@ -1,17 +1,20 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext, lazy, Suspense, useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Navbar, Container, Nav } from 'react-bootstrap';
 import './App.css'
 // import bg from './bg.png'
 import data from './routes/data.js'
 import Item from './routes/item.jsx'
-import Detail from './routes/detail.jsx'
+// import Detail from './routes/detail.jsx'
 import { Routes, Route, Link, useNavigate, Outlet, useParams } from 'react-router-dom'
 import axios from 'axios'
-import Cart from './routes/Cart.jsx'
+// import Cart from './routes/Cart.jsx'
 import { useQuery } from '@tanstack/react-query';
 
-let Context1 = createContext() // context 라는 state 보관함을 만들어줌
+// let Context1 = createContext() // context 라는 state 보관함을 만들어줌
+
+const Detail = lazy(()=> import('./routes/detail.jsx'))
+const Cart = lazy(()=> import('./routes/Cart.jsx'))
 
 function App() {
 
@@ -44,9 +47,9 @@ function App() {
   });
   
 
-  result.data // data 들어잇음
-  result.isLoading // loading 중일 때 true
-  result.error // error 날 때 true
+  // result.data // data 들어잇음
+  // result.isLoading // loading 중일 때 true
+  // result.error // error 날 때 true
 
 
   return (
@@ -121,7 +124,11 @@ function App() {
             }}>버튼</button>
           </>
         }/>
-        <Route path='/detail/:id' element={<Detail shoes = {shoes} />}/>
+        <Route path='/detail/:id' element={
+          <Suspense fallback={<div>로딩중임</div>}>
+            <Detail shoes = {shoes} />
+          </Suspense>
+          }/>
 
 
         <Route path='*' element={<div>없는 페이지입니다</div>}/>

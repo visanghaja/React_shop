@@ -6,9 +6,15 @@ import { Nav } from 'react-bootstrap'
 // import {Context1} from './../App.jsx'
 import { append } from "../store";
 import { useDispatch } from "react-redux";
+import { useLike } from "../hooks/like";
+import axios from "axios";
+import { useUsername } from "../hooks/name";
+
 
 function Detail(props) {
     // let {재고, shoes} = useContext(Context1)
+
+    
 
     let [fade2, setFade2] = useState('')
     let [alert, change_alert] = useState(false)
@@ -45,16 +51,23 @@ function Detail(props) {
         })
     }, [])
     
+    let [like, addLike] = useLike()
+
+    let name = useUsername()
+
 
     return(
 
         <div>
             <div className={"container start " + fade2}>
+                {name}
                 
                 <div className="row">
                     <div className="col-md-6">
                         <img src= {'https://codingapple1.github.io/shop/shoes' + (찾은상품.id+1) + '.jpg'} width="100%" />
                     </div>
+
+                    {like}<span onClick={() => {addLike()}}>하트</span>
                     <div className="col-md-6">
                         <h4 className="pt-5">{찾은상품.title}</h4>
                         <p>{찾은상품.content}</p>
